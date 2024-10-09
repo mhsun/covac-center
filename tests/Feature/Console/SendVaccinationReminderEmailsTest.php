@@ -1,9 +1,8 @@
 <?php
 
-use App\Mail\VaccinationReminderEmail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
 
@@ -13,13 +12,11 @@ it('sends reminder emails to users scheduled for tomorrow', function () {
         'scheduled_date' => \Carbon\Carbon::tomorrow(),
     ]);
 
-    Mail::fake();
+    Notification::fake();
 
     $this->artisan('vaccination:send-reminders');
 
-    Mail::assertSent(VaccinationReminderEmail::class, function ($mail) use ($user) {
-        return $mail->hasTo($user->email);
-    });
+    Notification::assertSentTo($user, \App\Notifications\SendVaccinationReminder::class);
 });
 
 it('does not send reminder emails to users not scheduled for tomorrow', function () {
@@ -28,9 +25,9 @@ it('does not send reminder emails to users not scheduled for tomorrow', function
         'scheduled_date' => \Carbon\Carbon::today(),
     ]);
 
-    Mail::fake();
+    Notification::fake();
 
     $this->artisan('vaccination:send-reminders');
 
-    Mail::assertNotSent(VaccinationReminderEmail::class);
+    Notification::assertNothingSentTo($user);
 });
