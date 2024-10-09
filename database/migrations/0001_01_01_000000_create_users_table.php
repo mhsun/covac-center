@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\VaccineCenter;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('nid')->unique();
+            $table->foreignIdFor(VaccineCenter::class)->constrained();
+            $table->date('scheduled_date')->nullable();
+            $table->enum('status', ['registered', 'scheduled', 'not-scheduled', 'vaccinated'])->default('registered');
             $table->timestamps();
         });
 
