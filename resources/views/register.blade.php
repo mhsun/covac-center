@@ -82,7 +82,7 @@
         </button>
     </form>
 
-    <p class="pt-4">Registered? <a href="{{ route('search') }}" class="!text-blue-600">Check Status Now!</a></p>
+    <p class="pt-4 text-center">Registered? <a href="{{ route('search') }}" class="!text-blue-600">Check Status Now!</a></p>
 </div>
 
 </body>

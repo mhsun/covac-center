@@ -34,14 +34,20 @@ it('returns Vaccinated if vaccination date is past', function () {
 it('returns Scheduled if vaccination date is future', function () {
     $user = User::factory()->scheduled()->create();
 
-    Cache::shouldReceive('remember')->andReturn(['status' => 'Scheduled', 'date' => $user->vaccination_date]);
+    $this->withoutExceptionHandling();
+
+    Cache::shouldReceive('remember')
+        ->andReturn([
+            'status' => 'Scheduled',
+            'date' => $user?->scheduled_date,
+        ]);
 
     $this->post(route('search.result'), [
         'nid' => $user->nid,
     ])->assertOk()
         ->assertViewIs('search')
         ->assertSee('Scheduled')
-        ->assertSee($user->vaccination_date);
+        ->assertSee($user?->scheduled_date->format('d M, Y'));
 
 });
 

@@ -1,9 +1,11 @@
 <?php
 
+use App\Events\UserRegistered;
 use App\Http\Controllers\RegistrationController;
 use App\Models\User;
 use App\Models\VaccineCenter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
@@ -18,14 +20,18 @@ it('displays the registration form with vaccine centers', function () {
 });
 
 it('registers a user successfully', function () {
+    Event::fake();
+
     expect(User::count())->toBe(0);
 
-    $response = $this->post('/register', [
+    $this->post('/register', [
         'name' => fake()->name,
         'email' => fake()->safeEmail(),
         'nid' => fake()->unique()->numberBetween(1000000000000, 9999999999999),
         'vaccine_center_id' => VaccineCenter::inRandomOrder()->first()->id,
     ]);
+
+    Event::assertDispatched(UserRegistered::class);
 
     expect(User::count())->toBe(1);
 });

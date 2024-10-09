@@ -13,6 +13,7 @@
 
     <form action="{{ route('search.result') }}" method="POST" class="space-y-4">
         @csrf
+
         <div class="flex flex-col space-y-2">
             <label for="nid" class="text-gray-700 font-medium">Enter NID</label>
             <input type="text" name="nid" id="nid" placeholder="Your NID" required
@@ -27,18 +28,23 @@
     </form>
 
     @if(isset($status))
-        <div class="mt-4 p-4 rounded-md {{ $status === 'Vaccinated' ? 'bg-green-100' : ($status === 'Scheduled' ? 'bg-yellow-100' : 'bg-red-100') }}">
+        <div class="mt-4 p-4 rounded-md bg-{{ $status === 'Vaccinated' ? 'green' : ($status === 'Scheduled' ? 'yellow' : 'red') }}-100">
             <p class="text-gray-800 font-semibold text-center">
                 Status: {{ $status }}
                 @if($status === 'Scheduled')
                     <br>
-                    Your vaccination date is: <strong>{{ $scheduled_date }}</strong>
+                    Your vaccination date is: <strong>{{ $scheduled_date->format('d M, Y') }}</strong>
+                @endif
+
+                @if($status === 'Not registered')
+                    <br>
+                    <span class="pt-4"><a href="/register" class="!text-blue-600">Register Now!</a></span>
                 @endif
             </p>
         </div>
+    @else
+        <p class="pt-4 text-center">Not Registered? <a href="/register" class="!text-blue-600">Register Now!</a></p>
     @endif
-
-    <p class="pt-4">Not Registered? <a href="/register" class="!text-blue-600">Register Now!</a></p>
 </div>
 
 </body>

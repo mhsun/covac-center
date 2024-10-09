@@ -27,10 +27,10 @@ class SearchController extends Controller
                 return ['status' => 'Not registered'];
             }
 
-            if ($user->vaccination_date) {
-                return $user->vaccination_date->isPast()
+            if ($user->scheduled_date) {
+                return $user->scheduled_date->isPast()
                     ? ['status' => 'Vaccinated']
-                    : ['status' => 'Scheduled', 'date' => $user->vaccination_date];
+                    : ['status' => 'Scheduled', 'date' => $user->scheduled_date];
             }
 
             return ['status' => 'Not scheduled'];
