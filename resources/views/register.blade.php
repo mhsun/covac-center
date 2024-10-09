@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register for Vaccination</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+@extends('layout')
+
+@section('title')
+    <title>Vaccine Registration</title>
+@endsection
+
+@section('content')
 
 <div class="bg-white p-8 rounded shadow-lg w-full max-w-md">
     <h1 class="text-2xl font-semibold text-center mb-6">Vaccine Registration</h1>
@@ -85,5 +83,4 @@
     <p class="pt-4 text-center">Registered? <a href="{{ route('search') }}" class="!text-blue-600">Check Status Now!</a></p>
 </div>
 
-</body>
-</html>
+@endsection

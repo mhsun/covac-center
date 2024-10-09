@@ -22,8 +22,6 @@ Follow these steps to set up the project locally:
 
 ````
 git clone https://github.com/mhsun/covac-center.git
-````
-
 cd covac-center
 ````
 
@@ -101,10 +99,31 @@ To run the test cases:
 php artisan test
 ````
 
+#### Optimizing the Application
+
+To optimize the application, you should run the following commands:
+
+````
+php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+````
+
+Apart from that, we should also consider the followings:
+
+_Queue Failed Job Cleanup:_
+````
+php artisan queue:flush
+````
+
+_Disable Query Logs and Debug Bar in production._
+
 ### Usage and Assumptions
 
 - A simple _sqlite_ database has been picked for simplicity
-- The NID column in the ``users`` table has been indexed for faster search
+- The NID column in the ``users`` table has been indexed (unique-index) for faster search
 - The database seeder creates 10 vaccine centers with random availability. This random availability is used to check the vaccine center's availability for a specific date when user picks a center in the registration form.
 - A renowned package `spatie/laravel-honeypot` has been used to prevent spam in the registration form so that the form is not submitted by bots. Feel free to customise its value in the `config/honeypot.php` file.
 - Caching has been used to store the vaccine centers data for an hour to display in the registration form. This is to reduce the load on the database and to improve the performance of the application. So that in the form, the vaccine centers data is fetched from the cache instead of the database. The caching time can be adjusted in the depending on the future needs.
