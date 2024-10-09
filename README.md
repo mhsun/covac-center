@@ -21,9 +21,10 @@ Follow these steps to set up the project locally:
 #### Clone the Repository:
 
 ````
-git clone https://github.com/mhsun/covid-vaccine-registration.git
+git clone https://github.com/mhsun/covac-center.git
+````
 
-cd covid-vaccine-registration
+cd covac-center
 ````
 
 #### Install Dependencies:
