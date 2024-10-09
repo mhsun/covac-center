@@ -1,66 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# COVID Vaccine Registration System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Overview
+This project is a COVID vaccine registration system built with Laravel and Tailwind CSS. The system allows users to register for vaccinations, schedule their appointments based on vaccine center availability, and check their registration status by NID. It also sends automated email notifications to users the night before their scheduled vaccination date.
 
-## About Laravel
+### Requirements
+Before setting up the project locally, ensure that you have the following installed:
+````
+PHP >= 8.3
+Composer 2.x
+Laravel 11.x
+Node.js >= 16.x (for npm and Vite)
+SQLite Database
+Redis (for caching and queue management)
+Mail Server (or use services like Mailtrap for local development)
+````
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Installation
+Follow these steps to set up the project locally:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### Clone the Repository:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+````
+git clone https://github.com/mhsun/covid-vaccine-registration.git
 
-## Learning Laravel
+cd covid-vaccine-registration
+````
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Install Dependencies:
+````
+composer install
+````
+#### Environment Configuration:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Copy the .env.example file to .env:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+````
+cp .env.example .env
+php artisan key:generate
+````
 
-## Laravel Sponsors
+Update the .env file with your local database, Redis, and mail server configurations.
+Example:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+````
+DB_CONNECTION=sqlite # or use your preferred database
+CACHE_DRIVER=redis
+QUEUE_CONNECTION=redis
 
-### Premium Partners
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_user
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=null
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+REDIS_CLIENT=predis # or configure to use phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
 
-## Contributing
+CACHE_STORE=redis
+CACHE_PREFIX=covax # or any prefix you prefer
+````
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Database Setup:
 
-## Code of Conduct
+Create the database under database directory if you're using SQLite (if not there already).
+For this simple task I didn't opt to use mysql or any other database. 
+SQLite serves the purpose needed for this project unless we opt to choose a 
+different scaling plan.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run migrations with seeders:
 
-## Security Vulnerabilities
+````
+touch database.sqlite
+php artisan migrate --seed
+````
+#### Compile Front-End Assets:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Nothing needed here for now as we use tailwindcss CDN and didn't focus a lot
+in the UI/UX part of the project.
 
-## License
+#### Running the Application
+To run the application locally:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Start the Laravel Development Server:
+
+````
+php artisan serve
+````
+Run the Background Job Worker and Queue:
+````
+php artisan schedule:work
+php artisan queue:work
+````
+
+To run the test cases:
+````
+php artisan test
+````
+
+### Usage and Assumptions
+
+- A simple _sqlite_ database has been picked for simplicity
+- The NID column in the ``users`` table has been indexed for faster search
+- The database seeder creates 10 vaccine centers with random availability. This random availability is used to check the vaccine center's availability for a specific date when user picks a center in the registration form.
+- A renowned package `spatie/laravel-honeypot` has been used to prevent spam in the registration form so that the form is not submitted by bots. Feel free to customise its value in the `config/honeypot.php` file.
+- Caching has been used to store the vaccine centers data for an hour to display in the registration form. This is to reduce the load on the database and to improve the performance of the application. So that in the form, the vaccine centers data is fetched from the cache instead of the database. The caching time can be adjusted in the depending on the future needs.
+- A caching is also used to store user's search results for a specific NID. This is to reduce the load on the database and to improve the performance of the application. So that the search results are fetched from the cache instead of the database. The caching time can be adjusted in the depending on the future needs. Currently it is set to 10 mins.
+- The idea behind allocating dates via an event-listener is keep the flexibility of the system. If more actions need to be performed in the future when a user registered for a vaccine, we can easily add more listeners to the event. There could be also other possible solution like creating a route to allocate dates to users or may be a CLI command to allocate dates to users. But I chose the event-listener approach to keep the system flexible. As there was not enough story on the future cases regarding this, I opted to keep it simple.
+- Storing and flushing caching is kept simple. But it can be extracted to a separate layer to make it more maintainable and scalable. (Ex: using a repository pattern)
+- An atomic lock is used to avoid race conditions when allocating dates to users. This is to ensure that only one user is allocated a date at a time so that we do not exceed the vaccine center's capacity.
+- Laravel's Notification is used to send mail to notify users about their scheduled vaccination date. This is chosen to keep the system flexible. **If in the future, we need to send SMS or any other notification, we can easily add more channels to the notification.**
+- Please use **mailtrap** or directly view the email body in the browser to check the content of the mail. The mailtrap credentials can be updated in the `.env` file.
+- The queue can be managed using the Laravel Horizon package (for multiple process and auto distribution). But for simplicity, I have used the default queue worker.
+- Test cases are there in place to test the core functionalities of the application. We avoided testing the UI part as it is not the main focus of the project. The test cases can be extended to cover more scenarios.

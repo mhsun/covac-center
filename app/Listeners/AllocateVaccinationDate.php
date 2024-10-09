@@ -34,12 +34,13 @@ class AllocateVaccinationDate implements ShouldQueue
         $user = $event->user;
 
         try {
-            $user->scheduled_date = $this->findNextAvailableDateFor($user->vaccineCenter);
-            $user->status = VaccineStatus::Scheduled->value;
-            $user->save();
+            Cache::lock("user_date_allocation_{$user->nid}")->block(5, function () use ($user) {
+                $user->scheduled_date = $this->findNextAvailableDateFor($user->vaccineCenter);
+                $user->status = VaccineStatus::Scheduled->value;
+                $user->save();
 
-            Cache::forget("user_status_{$user->nid}");
-
+                Cache::forget("user_status_{$user->nid}");
+            });
         } catch (\Exception $e) {
             report($e);
         }
