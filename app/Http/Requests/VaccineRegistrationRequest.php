@@ -24,16 +24,16 @@ class VaccineRegistrationRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'nid' => 'required|string|unique:users',
-            'vaccine_center_id' => 'required|exists:vaccine_centers,id'
+            'nid' => 'required|numeric|unique:users',
+            'vaccine_center_id' => 'required|exists:vaccine_centers,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-          'email.unique' => 'A registered user already exists with this email address.',
-          'nid.unique' => 'A registered user already exists with this NID.',
+            'email.unique' => 'A registered user already exists with this email address.',
+            'nid.unique' => 'A registered user already exists with this NID.',
         ];
     }
 }

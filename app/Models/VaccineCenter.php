@@ -13,9 +13,17 @@ class VaccineCenter extends Model
 
     protected $fillable = ['name', 'location', 'daily_capacity'];
 
-    protected $casts = [
-        'daily_capacity' => 'integer',
-    ];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'daily_capacity' => 'integer',
+        ];
+    }
 
     public function appointments(): HasMany
     {

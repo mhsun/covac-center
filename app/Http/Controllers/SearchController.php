@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class SearchController extends Controller
 {
@@ -13,29 +14,31 @@ class SearchController extends Controller
         return view('search');
     }
 
-    public function search(Request $request)
+    public function search(Request $request): View
     {
-        $validated = $request->validate(['nid' => 'required|string']);
+        $request->validate(['nid' => 'required|numeric']);
 
-        $user = User::where('nid', $validated['nid'])->first();
+        $nid = $request->input('nid');
 
-        if (!$user) {
-            return view('search', ['status' => 'Not registered']);
-        }
+        $status = Cache::remember("user_status_$nid", now()->addMinutes(10), function () use ($nid) {
+            $user = User::where('nid', $nid)->first();
 
-        if ($user->scheduled_date) {
-            if (Carbon::now()->gt($user->scheduled_date)) {
-                $status = 'Vaccinated';
-            } else {
-                $status = 'Scheduled';
+            if (! $user) {
+                return ['status' => 'Not registered'];
             }
-        } else {
-            $status = 'Not scheduled';
-        }
+
+            if ($user->vaccination_date) {
+                return $user->vaccination_date->isPast()
+                    ? ['status' => 'Vaccinated']
+                    : ['status' => 'Scheduled', 'date' => $user->vaccination_date];
+            }
+
+            return ['status' => 'Not scheduled'];
+        });
 
         return view('search', [
-            'status' => $status,
-            'scheduled_date' => $user->scheduled_date
+            'status' => $status['status'],
+            'scheduled_date' => $status['date'] ?? null,
         ]);
     }
 }

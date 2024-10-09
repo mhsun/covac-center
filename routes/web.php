@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
@@ -17,6 +17,3 @@ Route::get('/register', [RegistrationController::class, 'create'])
 Route::post('/register', [RegistrationController::class, 'store'])
     ->middleware(ProtectAgainstSpam::class)
     ->name('register.store');
-
-Route::get('/schedule', [RegistrationController::class, 'scheduleVaccinations']);
-
