@@ -21,7 +21,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'nid' => fake()->unique()->numberBetween(1000000000000, 9999999999999),
+            'nid' => fake()->unique()->numerify('#################'),
             'vaccine_center_id' => VaccineCenter::factory(),
         ];
     }

@@ -27,7 +27,7 @@ it('registers a user successfully', function () {
     $this->post('/register', [
         'name' => fake()->name,
         'email' => fake()->safeEmail(),
-        'nid' => fake()->unique()->numberBetween(1000000000000, 9999999999999),
+        'nid' => fake()->unique()->numerify('#################'),
         'vaccine_center_id' => VaccineCenter::inRandomOrder()->first()->id,
     ]);
 
@@ -57,7 +57,7 @@ it('restricts user to be registered with same email', function () {
     $this->post('/register', [
         'name' => fake()->name,
         'email' => $user->email,
-        'nid' => fake()->unique()->numberBetween(1000000000000, 9999999999999),
+        'nid' => fake()->unique()->numerify('#################'),
         'vaccine_center_id' => VaccineCenter::inRandomOrder()->first()->id,
     ]);
 

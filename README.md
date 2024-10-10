@@ -124,6 +124,7 @@ _Disable Query Logs and Debug Bar in production._
 
 - A simple _sqlite_ database has been picked for simplicity
 - The NID column in the ``users`` table has been indexed (unique-index) for faster search
+- Validation rules are kept simple against NID. But in real-world scenarios, we can have more complex validation rules to ensure a valid NID number.
 - The database seeder creates 10 vaccine centers with random availability. This random availability is used to check the vaccine center's availability for a specific date when user picks a center in the registration form.
 - A renowned package `spatie/laravel-honeypot` has been used to prevent spam in the registration form so that the form is not submitted by bots. Feel free to customise its value in the `config/honeypot.php` file.
 - Caching has been used to store the vaccine centers data for an hour to display in the registration form. This is to reduce the load on the database and to improve the performance of the application. So that in the form, the vaccine centers data is fetched from the cache instead of the database. The caching time can be adjusted in the depending on the future needs.
